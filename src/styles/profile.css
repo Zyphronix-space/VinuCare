@@ -1,0 +1,179 @@
+.profile-wrap {
+  min-height: calc(100vh - 80px);
+  display: flex; justify-content: center;
+  padding: 48px 20px 80px;
+}
+
+.profile-card {
+  width: 100%; max-width: 980px;
+  background: rgba(var(--glass-rgb), 0.7);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid var(--border-light);
+  border-radius: 22px;
+  padding: 32px 30px 28px;
+  box-shadow: 0 20px 50px rgba(30,27,46,0.12);
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+.profile-col { min-width: 0; }
+.profile-col-right { border-left: 1px solid var(--border-light); padding-left: 32px; }
+
+@media (max-width: 860px) {
+  .profile-layout { grid-template-columns: 1fr; gap: 8px; }
+  .profile-col-right { border-left: none; padding-left: 0; border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 8px; }
+}
+
+.profile-header {
+  display: flex; align-items: center; gap: 16px;
+  padding-bottom: 22px; margin-bottom: 22px;
+  border-bottom: 1px solid var(--border-light);
+}
+/* inline-block so this shrinks to the avatar's own size rather than
+   stretching to its parent's full width — matters wherever it's used
+   outside a flex row (e.g. the admin Settings panel), since the
+   edit-photo button below anchors to *this* wrapper's right edge. */
+.profile-avatar-wrap { position: relative; flex-shrink: 0; display: inline-block; }
+.profile-avatar-edit-btn {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--white); color: #7C5CE8;
+  border: 2px solid var(--white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer; transition: transform .12s ease, background-color .15s ease;
+}
+.profile-avatar-edit-btn:hover { background: #7C5CE8; color: #fff; transform: scale(1.08); }
+.profile-avatar-edit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Popover opened by the edit-avatar button — preset animal picks plus
+   the fallback of uploading your own photo, same glass-panel language
+   as the nav account dropdown (nav-account-dropdown in Nav.jsx). */
+.avatar-picker-popover {
+  position: absolute; top: calc(100% + 10px); left: 0;
+  width: 240px; z-index: 20;
+  background: linear-gradient(135deg, rgba(var(--glass-rgb),0.96), rgba(var(--glass-rgb),0.9));
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  box-shadow: 0 20px 48px rgba(124,92,232,0.18), 0 4px 14px rgba(30,27,46,0.12);
+  padding: 14px;
+  animation: avatarPickerIn 0.15s ease;
+}
+@keyframes avatarPickerIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.avatar-picker-title { font-size: 0.78rem; font-weight: 700; color: var(--text-light); margin-bottom: 10px; }
+.avatar-picker-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.avatar-picker-option {
+  background: none; border: 2px solid transparent; border-radius: 50%;
+  padding: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s ease, transform .12s ease;
+}
+.avatar-picker-option:hover:not(:disabled) { border-color: var(--lavender-300); transform: scale(1.06); }
+.avatar-picker-option:disabled { opacity: 0.6; cursor: not-allowed; }
+.avatar-picker-divider { height: 1px; background: var(--border-light); margin: 12px 0; }
+.avatar-picker-upload-btn {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: none; border: none; padding: 6px 2px;
+  color: var(--text-dark); font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  border-radius: 8px; transition: background-color .15s ease;
+}
+.avatar-picker-upload-btn:hover:not(:disabled) { background: var(--lavender-50); }
+.avatar-picker-upload-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.avatar-picker-remove-btn {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; margin-top: 2px; padding: 6px 2px;
+  background: none; border: none; color: #C0392B;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 8px; transition: background-color .15s ease, color .15s ease;
+}
+.avatar-picker-remove-btn:hover:not(:disabled) { background: rgba(229,85,85,0.1); color: #e55; }
+.avatar-picker-remove-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.profile-header h1 { margin: 0 0 4px; font-size: 1.3rem; color: var(--text-dark); }
+.profile-role-badge {
+  display: inline-block; padding: 3px 11px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 700; text-transform: capitalize;
+  background: rgba(124,92,232,0.15); color: #7C5CE8;
+}
+.profile-role-badge.role-admin { background: #EDE9FE; color: #5B21B6; }
+.profile-role-badge.role-doctor { background: #CCFBF1; color: #0F766E; }
+.profile-role-badge.role-nurse { background: #FCE7F3; color: #9D174D; }
+
+.profile-section { margin-bottom: 26px; }
+.profile-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.profile-section-head h2 { margin: 0; font-size: 1rem; color: var(--text-dark); }
+
+.profile-info-list { display: flex; flex-direction: column; gap: 2px; }
+.profile-info-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 2px; font-size: 0.88rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.profile-info-row:last-child { border-bottom: none; }
+.profile-info-row span { color: var(--text-light); }
+.profile-info-row strong { color: var(--text-dark); font-weight: 600; text-align: right; }
+
+.profile-edit-form { display: flex; flex-direction: column; gap: 14px; }
+.profile-field-hint { font-size: 0.74rem; color: var(--text-light); margin-top: 2px; display: block; }
+.profile-form-actions { display: flex; align-items: center; gap: 16px; margin-top: 2px; }
+.profile-form-actions .auth-btn-primary { width: auto; padding: 10px 22px; }
+
+.profile-back-btn {
+  background: none; border: none; color: var(--text-light);
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 6px 2px;
+}
+.profile-back-btn:hover { color: #7C5CE8; }
+
+/* ── Booking & payment history ── */
+.profile-history-empty {
+  font-size: 0.85rem; color: var(--text-light);
+  padding: 10px 2px; margin: 0;
+}
+.profile-history-list {
+  display: flex; flex-direction: column; gap: 10px;
+  max-height: 260px; overflow-y: auto; padding-right: 2px;
+}
+.profile-history-item {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(var(--glass-rgb), 0.4);
+  border: 1px solid var(--border-light);
+}
+.profile-history-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.profile-history-main strong { font-size: 0.9rem; color: var(--text-dark); }
+.profile-history-sub { font-size: 0.76rem; color: var(--text-light); }
+.profile-history-contact a { color: var(--lavender-600); font-weight: 600; text-decoration: none; }
+.profile-history-contact a:hover { text-decoration: underline; }
+.profile-history-side {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0;
+}
+.profile-history-amount { font-size: 0.85rem; font-weight: 700; color: var(--text-dark); white-space: nowrap; }
+
+.profile-status-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; text-transform: capitalize; white-space: nowrap;
+}
+.profile-status-badge.status-paid,
+.profile-status-badge.status-confirmed,
+.profile-status-badge.status-completed { background: #DCFCE7; color: #15803D; }
+.profile-status-badge.status-pending { background: #FEF3C7; color: #B45309; }
+.profile-status-badge.status-cancelled { background: #FEE2E2; color: #B91C1C; }
+
+@media (max-width: 560px) {
+  .profile-card { padding: 26px 20px 22px; }
+  .profile-history-item { flex-direction: column; align-items: flex-start; }
+  .profile-history-side { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+}

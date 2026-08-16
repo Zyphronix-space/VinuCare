@@ -1,0 +1,404 @@
+/* Doctor Calendar — restyled to match the admin "liquid glass" design
+   system (see admin.css: --admin-indigo / --admin-teal / --admin-gold /
+   --admin-rose, translucent glass cards with backdrop-filter blur).
+   Scoped with vc-cal- prefix to avoid clashing with admin.css. */
+
+.vc-cal {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .vc-cal {
+    grid-template-columns: 1fr;
+  }
+  .vc-cal-panel {
+    position: static;
+  }
+}
+@media (max-width: 560px) {
+  .vc-cal-grid-wrap {
+    padding: 14px 8px;
+  }
+  .vc-cal-day {
+    min-height: 58px;
+    padding: 4px;
+  }
+  .vc-cal-chip {
+    font-size: 0.58rem;
+    padding: 1px 4px;
+  }
+  .vc-cal-weekday {
+    font-size: 0.6rem;
+  }
+}
+
+/* ---------- Glass card shells ---------- */
+
+.vc-cal-grid-wrap,
+.vc-cal-panel {
+  background: var(--admin-card);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+  box-shadow: 0 6px 24px rgba(55, 48, 163, 0.06);
+}
+
+.vc-cal-grid-wrap {
+  padding: 22px;
+}
+
+.vc-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.vc-cal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--admin-ink);
+}
+
+.vc-cal-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vc-cal-nav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border);
+  background: rgba(var(--glass-rgb), 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--admin-indigo);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, filter 0.15s ease;
+}
+
+.vc-cal-nav-btn:hover {
+  background: rgba(var(--glass-rgb), 0.85);
+  filter: brightness(1.02);
+}
+
+.vc-cal-today-btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--admin-indigo);
+  background: rgba(var(--glass-rgb), 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--admin-indigo);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.vc-cal-today-btn:hover {
+  background: var(--admin-indigo);
+  color: #fff;
+}
+
+.vc-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.vc-cal-weekday {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--admin-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 6px;
+}
+
+.vc-cal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vc-cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* ---------- Day cells ---------- */
+
+.vc-cal-day {
+  min-height: 86px;
+  border-radius: 12px;
+  border: 1px solid var(--admin-border);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+
+.vc-cal-day:hover {
+  background: rgba(224, 231, 255, 0.55); /* indigo-100 tint */
+}
+
+.vc-cal-day:active {
+  transform: scale(0.99);
+}
+
+.vc-cal-day--muted {
+  opacity: 0.4;
+}
+
+.vc-cal-day--today .vc-cal-day-num {
+  background: var(--admin-indigo);
+  color: #fff;
+  border-radius: 50%;
+}
+
+.vc-cal-day--selected {
+  border-color: var(--admin-indigo);
+  box-shadow: 0 0 0 1px var(--admin-indigo) inset, 0 4px 14px rgba(55, 48, 163, 0.12);
+  background: rgba(224, 231, 255, 0.4);
+}
+
+.vc-cal-day--unavailable {
+  background: rgba(185, 28, 28, 0.06);
+}
+.vc-cal-day--unavailable .vc-cal-day-num::after {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #B91C1C;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+/* Clinic-wide public holiday — same grayed-out treatment as a
+   doctor-marked unavailable day, but in the site's own accent color so
+   it reads as a different reason (nothing to toggle, clinic is closed). */
+.vc-cal-day--holiday {
+  background: rgba(124, 92, 232, 0.08);
+}
+.vc-cal-day--holiday .vc-cal-day-num::after {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--lavender-500);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.vc-cal-day-num {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--admin-ink);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vc-cal-day-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+/* Appointment chips — same status language as admin-badge pills */
+
+.vc-cal-chip {
+  font-size: 0.66rem;
+  line-height: 1.3;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #CCFBF1; /* teal-100, matches badge-doctor */
+  color: var(--admin-teal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  border-left: 3px solid var(--admin-teal);
+}
+
+.vc-cal-chip.status-completed {
+  background: #E5E7EB;
+  color: #374151;
+  border-left-color: #9CA3AF;
+}
+
+.vc-cal-chip.status-cancelled {
+  background: #FEE2E2;
+  color: var(--admin-rose);
+  border-left-color: var(--admin-rose);
+  text-decoration: line-through;
+}
+
+.vc-cal-chip-more {
+  font-size: 0.62rem;
+  color: var(--admin-muted);
+  padding: 0 5px;
+  font-weight: 600;
+}
+
+/* ---------- Side panel ---------- */
+
+.vc-cal-panel {
+  padding: 20px;
+  min-height: 200px;
+  position: sticky;
+  top: 16px;
+}
+
+.vc-cal-panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.vc-cal-panel-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--admin-ink);
+}
+
+.vc-cal-availability-btn {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: 1.5px solid #B91C1C;
+  background: rgba(var(--glass-rgb), 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #B91C1C;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.vc-cal-availability-btn:hover:not(:disabled) { background: rgba(185, 28, 28, 0.08); }
+.vc-cal-availability-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.vc-cal-availability-btn.is-unavailable {
+  border-color: var(--admin-teal);
+  color: var(--admin-teal);
+}
+.vc-cal-availability-btn.is-unavailable:hover:not(:disabled) { background: rgba(15, 118, 110, 0.08); }
+
+.vc-cal-panel-count {
+  font-size: 0.78rem;
+  color: var(--admin-muted);
+  font-weight: 600;
+}
+
+.vc-cal-empty {
+  font-size: 0.85rem;
+  color: var(--admin-muted);
+  margin: 0;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.vc-cal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vc-cal-list-item {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.vc-cal-list-time {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--admin-teal);
+  padding-top: 2px;
+}
+
+.vc-cal-list-patient {
+  font-size: 0.87rem;
+  font-weight: 700;
+  color: var(--admin-ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vc-cal-list-meta {
+  font-size: 0.78rem;
+  color: var(--admin-muted);
+  margin-top: 2px;
+}
+
+.vc-cal-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--admin-teal);
+  display: inline-block;
+}
+
+.vc-cal-status-dot.status-completed {
+  background: #9CA3AF;
+}
+
+.vc-cal-status-dot.status-cancelled {
+  background: var(--admin-rose);
+}
+
+.vc-cal-status-label {
+  grid-column: 2;
+  justify-self: start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #CCFBF1;
+  color: var(--admin-teal);
+}
+
+.vc-cal-status-label.status-completed {
+  background: #E5E7EB;
+  color: #374151;
+}
+
+.vc-cal-status-label.status-cancelled {
+  background: #FEE2E2;
+  color: var(--admin-rose);
+}

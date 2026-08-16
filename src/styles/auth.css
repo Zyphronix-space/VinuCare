@@ -1,0 +1,341 @@
+/* ═══════════════════════════════
+   AUTH.CSS — Login & Sign Up
+═══════════════════════════════ */
+
+.auth-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--off-white);
+  padding: 48px 20px;
+  min-height: calc(100vh - var(--nav-h));
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 420px;
+  background: var(--white);
+  border-radius: 24px;
+  padding: 40px 36px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 8px 40px rgba(100,65,212,.10);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* HEADER */
+.auth-header {
+  text-align: center;
+  margin-bottom: 4px;
+}
+.auth-logo {
+  font-size: 2rem;
+  display: inline-block;
+  background: linear-gradient(135deg, var(--lavender-500), var(--lavender-700));
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  cursor: pointer;
+}
+.auth-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+.auth-header p {
+  font-size: .88rem;
+  color: var(--text-light);
+}
+
+/* GOOGLE BUTTON */
+.auth-google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  font-family: 'Outfit', sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.auth-google-btn:hover {
+  border-color: var(--lavender-300);
+  background: var(--lavender-50);
+  transform: translateY(-1px);
+}
+.auth-google-btn:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+.auth-google-btn:disabled:hover {
+  transform: none;
+  background: var(--white);
+}
+
+/* Google Identity Services renders its own <div>/iframe button inside
+   this mount point once VITE_GOOGLE_CLIENT_ID is set (see
+   GoogleAuthButton.jsx) — center it the same way the static fallback
+   button sits. */
+.auth-google-btn-mount {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* OR DIVIDER */
+.auth-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-light);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.auth-or::before, .auth-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* FIELDS */
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.auth-field label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--text-mid);
+}
+.auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.auth-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  color: var(--text-dark);
+  background: var(--off-white);
+  outline: none;
+  transition: all .2s;
+}
+.auth-input::placeholder { color: var(--text-light); }
+.auth-input:focus {
+  border-color: var(--lavender-500);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(124,92,232,.12);
+}
+.auth-input.err {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 3px rgba(229,62,62,.10);
+}
+
+/* Browsers force their own light background + dark text on autofilled
+   fields (e.g. saved email/password) and ignore normal background/color
+   CSS entirely. This is the only reliable cross-browser way to make an
+   autofilled input follow the page's own theme instead. */
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--off-white) inset !important;
+  -webkit-text-fill-color: var(--text-dark) !important;
+  caret-color: var(--text-dark);
+  transition: background-color 9999s ease-in-out 0s;
+}
+.auth-input:focus:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--white) inset !important;
+}
+.auth-pw-wrap { position: relative; }
+.auth-pw-wrap .auth-input { padding-right: 42px; }
+.auth-eye {
+  position: absolute;
+  right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: .9rem;
+  color: var(--text-light);
+  padding: 4px;
+  line-height: 1;
+}
+.auth-eye:hover { color: var(--lavender-500); }
+
+.auth-err-msg {
+  font-size: .74rem;
+  color: #e53e3e;
+  font-weight: 500;
+}
+
+/* STRENGTH BAR */
+.auth-strength-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.auth-strength-seg {
+  flex: 1;
+  height: 3px;
+  border-radius: 4px;
+  transition: background .3s;
+}
+
+/* FORGOT / LINK BUTTONS */
+.auth-link-btn {
+  background: none;
+  border: none;
+  color: var(--lavender-600);
+  font-family: 'Outfit', sans-serif;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+.auth-link-btn:hover { text-decoration: underline; }
+
+/* TERMS CHECKBOX */
+.auth-terms-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: .8rem;
+  color: var(--text-mid);
+  cursor: pointer;
+  line-height: 1.5;
+}
+.auth-terms-check input {
+  margin-top: 2px;
+  accent-color: var(--lavender-500);
+  width: 15px; height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.auth-terms-check a {
+  color: var(--lavender-600);
+  font-weight: 600;
+  cursor: pointer;
+}
+.auth-terms-check a:hover { text-decoration: underline; }
+
+/* SUBMIT BUTTON */
+.auth-btn-primary {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(135deg, var(--lavender-500), var(--lavender-700));
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .25s;
+  box-shadow: 0 6px 20px rgba(124,92,232,.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.auth-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(124,92,232,.5);
+}
+.auth-btn-primary:disabled { opacity: .6; cursor: not-allowed; }
+
+/* SPINNER */
+.auth-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: authSpin .7s linear infinite;
+  display: inline-block;
+}
+@keyframes authSpin { to { transform: rotate(360deg); } }
+
+/* SWITCH LINK */
+.auth-switch {
+  text-align: center;
+  font-size: .84rem;
+  color: var(--text-light);
+  margin: 0;
+}
+.auth-switch button {
+  background: none;
+  border: none;
+  color: var(--lavender-600);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: .84rem;
+  padding: 0 2px;
+}
+.auth-switch button:hover { text-decoration: underline; }
+
+/* SUCCESS STATE */
+.auth-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  padding: 12px 0;
+}
+.auth-success-icon {
+  font-size: 2.4rem;
+  width: 64px; height: 64px;
+  background: var(--lavender-50);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--lavender-200);
+}
+.auth-success h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem;
+  color: var(--text-dark);
+}
+.auth-success p {
+  font-size: .88rem;
+  color: var(--text-light);
+  line-height: 1.7;
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 480px) {
+  .auth-wrap {
+    padding: 28px 14px;
+  }
+  .auth-box {
+    padding: 30px 22px;
+    border-radius: 20px;
+    gap: 14px;
+  }
+  .auth-header h1 {
+    font-size: 1.6rem;
+  }
+}

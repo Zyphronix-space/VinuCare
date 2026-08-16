@@ -1,0 +1,193 @@
+/* ═══════════════════════════════
+   NAV-FOOTER.CSS — shared header & footer
+   (present on every VinuCare page)
+═══════════════════════════════ */
+
+/* ═══ LOGO SVG ═══ */
+.logo-mark svg{width:36px;height:36px;}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  text-decoration:none;cursor:pointer;flex-shrink:0;
+}
+.logo-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:700;
+  color:var(--text-dark);line-height:1;
+}
+.logo-text span{color:var(--lavender-500);}
+.logo-sub{font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-light);display:block;margin-top:1px;}
+
+/* ═══ NAV ═══ */
+nav.liquid-nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 16px var(--shadow-xs);
+}
+.nav-links{display:flex;gap:2px;list-style:none;}
+.nav-links li a{
+  text-decoration:none;color:var(--text-mid);font-weight:500;font-size:.875rem;
+  padding:8px 16px;border-radius:30px;transition:all .22s;cursor:pointer;display:block;
+  white-space:nowrap;
+}
+.nav-links li a:hover{background:var(--lavender-50);color:var(--lavender-600);}
+.nav-links li a.active{background:var(--lavender-100);color:var(--lavender-600);font-weight:600;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-cta{
+  background:linear-gradient(135deg,var(--lavender-500),var(--lavender-700));
+  color:#fff;font-size:.875rem;font-weight:600;
+  padding:10px 22px;border-radius:30px;cursor:pointer;border:none;
+  font-family:'Outfit',sans-serif;transition:all .22s;white-space:nowrap;
+  box-shadow:0 4px 18px rgba(124,92,232,.35);
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(124,92,232,.5);}
+.nav-cart-btn{
+  position:relative;background:none;border:none;cursor:pointer;
+  font-size:1.25rem;padding:8px 10px;border-radius:12px;transition:background .2s;
+  display:flex;align-items:center;color:var(--text-mid);
+}
+.nav-cart-btn:hover{background:var(--lavender-50);}
+.cart-badge{
+  position:absolute;top:2px;right:3px;
+  background:var(--lavender-500);color:#fff;
+  font-size:.56rem;font-weight:700;
+  width:16px;height:16px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+}
+.cart-badge.show{display:flex;}
+.hamburger{display:none;align-items:center;justify-content:center;cursor:pointer;background:none;border:none;padding:8px;color:var(--text-dark);}
+.mobile-menu{
+  display:none;position:fixed;top:var(--nav-h);left:0;right:0;
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:12px 5%;flex-direction:column;gap:2px;z-index:998;
+  box-shadow:0 8px 24px var(--shadow-md);
+}
+.mobile-menu.open{display:flex;animation:slideDown .22s ease;}
+.mobile-menu a{text-decoration:none;color:var(--text-mid);font-weight:500;padding:11px 16px;border-radius:12px;cursor:pointer;transition:background .2s;font-size:.94rem;}
+.mobile-menu a:hover,.mobile-menu a.active{background:var(--lavender-50);color:var(--lavender-600);}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ═══ FOOTER ═══ */
+.site-footer{background:var(--purple-deep);color:rgba(255,255,255,.6);padding:64px 5% 28px;margin-top:auto;}
+.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:40px;margin-bottom:44px;}
+.footer-brand .logo-text{color:#fff;}
+.footer-brand .logo-text span{color:var(--lavender-300);}
+.footer-brand p{font-size:.84rem;color:rgba(255,255,255,.4);line-height:1.75;margin-top:12px;}
+.footer-col h4{color:#fff;font-weight:700;margin-bottom:14px;font-size:.86rem;letter-spacing:.03em;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-col ul li a{color:rgba(255,255,255,.42);text-decoration:none;font-size:.84rem;transition:color .2s;cursor:pointer;}
+.footer-col ul li a:hover{color:var(--lavender-300);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:.78rem;color:rgba(255,255,255,.28);}
+
+
+/* ═══ NAV AUTH BUTTONS ═══ */
+.nav-login-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 30px;
+  background: transparent;
+  color: var(--text-mid);
+  font-family: 'Outfit', sans-serif;
+  font-size: .84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .22s;
+  white-space: nowrap;
+}
+.nav-login-btn:hover {
+  border-color: var(--lavender-400);
+  background: var(--lavender-50);
+  color: var(--lavender-600);
+}
+
+/* ═══ THEME TOGGLE ═══ */
+.theme-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+.theme-toggle-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  padding: 3px;
+  background: var(--lavender-100);
+  border: 1px solid var(--border);
+  transition: background .35s ease, border-color .35s ease;
+}
+.theme-toggle.is-dark .theme-toggle-track {
+  /* Was hardcoded to the OLD (near-black) dark tokens, which put the
+     toggle almost the same color as the nav bar it sits on — nearly
+     invisible. Following the updated var(--lavender-100)/var(--border)
+     values keeps it visibly lighter than the nav glass behind it. */
+  background: var(--lavender-100);
+  border-color: var(--border);
+}
+.theme-toggle-icon {
+  position: relative;
+  z-index: 1;
+  width: 50%;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1;
+  opacity: 0.55;
+  transition: opacity .35s ease;
+}
+.theme-toggle.is-dark .theme-toggle-icon.moon,
+.theme-toggle:not(.is-dark) .theme-toggle-icon.sun {
+  opacity: 1;
+}
+.theme-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff, var(--lavender-100));
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: transform .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.theme-toggle.is-dark .theme-toggle-knob {
+  transform: translateX(24px);
+  background: linear-gradient(135deg, #7C6BAD, #4A3D70);
+}
+
+/* ═══ RESPONSIVE (nav + footer rules) ═══ */
+@media(max-width:900px){
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+/* The nav's full content (logo + 5 links + Book Now + cart + login/account
+   button) needs ~1000px+ to fit without wrapping — collapse to the
+   hamburger well before that, not just at phone widths, or the bar
+   overflows horizontally on tablets/narrow laptop windows. */
+@media(max-width:1080px){
+  .nav-links,.nav-cta{display:none;}
+  .hamburger{display:flex;}
+  nav.liquid-nav{padding:0 4%;}
+  .nav-right{gap:4px;}
+  .nav-account-btn{padding:6px 10px;font-size:.8rem;}
+  .nav-account-dropdown{min-width:210px;right:-4%;}
+  .nav-login-btn{padding:6px 12px;font-size:.8rem;}
+}
+@media(max-width:680px){
+  .footer-grid{grid-template-columns:1fr;gap:24px;}
+  .footer-bottom{flex-direction:column;align-items:flex-start;}
+}
+@media(max-width:420px){
+  .logo-sub{display:none;}
+  .logo-text{font-size:1.3rem;}
+  .nav-account-btn span:not(.item-icon-label){display:none;}
+  .vinu-cart-btn-wrapper{padding:4px;}
+}

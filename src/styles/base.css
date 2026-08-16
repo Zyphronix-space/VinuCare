@@ -1,0 +1,297 @@
+/* ═══════════════════════════════
+   BASE.CSS — resets, design tokens,
+   page system & shared utility classes
+   (used across every VinuCare page)
+═══════════════════════════════ */
+
+/* ═══ RESET & VARS ═══ */
+:root {
+  --white:#FFFFFF;
+  --off-white:#F8F6FF;
+  --lavender-50:#F3EFFE;
+  --lavender-100:#E8DFFE;
+  --lavender-200:#D3C4FD;
+  --lavender-300:#B59EF8;
+  --lavender-400:#9B7EF4;
+  --lavender-500:#7C5CE8;
+  --lavender-600:#6441D4;
+  --lavender-700:#4F2FBD;
+  --purple-deep:#2D1B69;
+  --text-dark:#1A1035;
+  --text-mid:#4A3F6B;
+  --text-light:#8B7BAD;
+  --border:#E5DAFA;
+  --border-light:#F0EAFF;
+  --shadow-xs:rgba(100,65,212,0.06);
+  --shadow-sm:rgba(100,65,212,0.10);
+  --shadow-md:rgba(100,65,212,0.18);
+  --shadow-lg:rgba(100,65,212,0.26);
+  --nav-h:72px;
+  --radius-sm:12px;
+  --radius-md:20px;
+  --radius-lg:28px;
+  --radius-xl:36px;
+  --transition:0.30s cubic-bezier(0.4,0,0.2,1);
+  /* RGB triplet (no alpha) for frosted-glass panels built from
+     rgba(255,255,255,X). Lets background: rgba(var(--glass-rgb),X)
+     flip dark along with every other token below. */
+  --glass-rgb:255,255,255;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+/* Browsers default <button> text/icon color to the UA system color
+   "buttontext" (effectively always near-black) instead of inheriting
+   from the page — invisible on any dark surface. Any button that sets
+   its own `color` (most of the site) is unaffected since a class
+   selector still wins over this; this only fixes the ones that were
+   silently relying on the browser default, like icon-only buttons
+   (cart, hamburger) that use `currentColor` internally. */
+button{color:inherit;font:inherit;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--white);
+  color:var(--text-dark);
+  line-height:1.65;
+  overflow-x:hidden;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+}
+
+/* Native <select> dropdown lists don't reliably inherit `color` from
+   the page in every browser, so a themed <select> can end up with a
+   dark popup background (inherited fine) but default-black option
+   text (not inherited) — unreadable in dark mode. Needs an explicit
+   rule tied to the same tokens. */
+select option {
+  background: var(--white);
+  color: var(--text-dark);
+}
+
+/* ═══ DARK MODE ═══
+   Re-maps the same design tokens used everywhere else in the codebase,
+   so any element already styled with var(--white), var(--off-white),
+   var(--text-dark) etc. (which is most surfaces/text after the
+   tokenizing pass) automatically follows the theme. Toggled by adding
+   data-theme="dark" to <html> — see ThemeContext.jsx / ThemeToggle.jsx. */
+/* Cards/panels are styled with var(--white) almost everywhere (44+ call
+   sites) and page/section wraps with var(--off-white) in a handful of
+   places (auth-wrap, a few home sections) — same relationship as light
+   mode, where off-white is the marginally-recessed backdrop a brighter
+   white card floats on top of. The previous dark values had this
+   inverted (off-white LIGHTER than white), so every card rendered
+   *darker* than the page around it instead of popping — reading as flat
+   black holes rather than elevated surfaces. Also swapped the base
+   near-black tone for a visibly purple-tinted dark gray, since a
+   commercial dark mode should read as "dark", not "black". */
+html[data-theme="dark"]{
+  --white:#221C36;
+  --off-white:#1B1729;
+  --lavender-50:#2B2444;
+  --lavender-100:#382D58;
+  --border:#4A3D70;
+  --border-light:#332B4C;
+  --text-dark:#F5F1FC;
+  --text-mid:#C9BEE0;
+  --text-light:#9C8FBD;
+  --shadow-xs:rgba(0,0,0,0.28);
+  --shadow-sm:rgba(0,0,0,0.38);
+  --shadow-md:rgba(0,0,0,0.48);
+  --shadow-lg:rgba(0,0,0,0.58);
+  --glass-rgb:34,28,54;
+}
+/* Smooth crossfade instead of an instant color snap when the toggle fires. */
+html, body, #app,
+.page, .page-mount,
+[class*="card"], [class*="wrap"], [class*="modal"], [class*="banner"],
+input, textarea, select, button {
+  transition: background-color .35s ease, color .35s ease, border-color .35s ease;
+}
+@media (prefers-reduced-motion: reduce){
+  html, body, #app,
+  .page, .page-mount,
+  [class*="card"], [class*="wrap"], [class*="modal"], [class*="banner"],
+  input, textarea, select, button {
+    transition: none;
+  }
+}
+
+/* ═══ PAGE SYSTEM ═══ */
+#app{flex:1;position:relative;}
+.page{display:none;min-height:calc(100vh - var(--nav-h));padding-top:var(--nav-h);flex-direction:column;}
+.page.active{display:flex;}
+.page.exit{animation:pageOut .32s cubic-bezier(0.4,0,0.2,1) forwards;}
+@keyframes pageIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pageOut{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-8px);}}
+
+/* Wraps every mounted page in App.jsx. Pages stay alive in the DOM
+   permanently (see PageMount in App.jsx), so this class is re-applied
+   via a JS reflow trick every time a page is navigated TO — not just on
+   its first mount — which is what makes the transition replay on every
+   nav click instead of only once per page. */
+.page-mount{display:none;}
+.page-mount.page-mount-active{display:block;}
+.page-mount.page-mount-play{animation:pageMountIn .5s cubic-bezier(0.16,1,0.3,1) both;}
+@keyframes pageMountIn{
+  from{opacity:0;transform:translateY(18px) scale(0.98);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+@media (prefers-reduced-motion: reduce){
+  .page-mount.page-mount-play{animation:none;}
+}
+
+/* ═══ SCROLL REVEAL (see components/Reveal.jsx) ═══ */
+.reveal{opacity:0;transition:opacity .7s cubic-bezier(0.16,1,0.3,1), transform .7s cubic-bezier(0.16,1,0.3,1);will-change:opacity,transform;}
+.reveal-up{transform:translateY(28px);}
+.reveal-left{transform:translateX(-32px);}
+.reveal-right{transform:translateX(32px);}
+.reveal-none{transform:none;}
+.reveal-visible{opacity:1;transform:translate(0,0);}
+@media (prefers-reduced-motion: reduce){
+  .reveal{transition:none;opacity:1;transform:none;}
+}
+
+/* ═══ SHARED ═══ */
+.pill-tag{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--lavender-100);color:var(--lavender-600);padding:5px 16px;border-radius:20px;margin-bottom:16px;}
+.section-header{text-align:center;margin-bottom:56px;}
+.section-header h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);color:var(--text-dark);margin-bottom:10px;line-height:1.15;}
+.section-header p{color:var(--text-light);max-width:520px;margin:0 auto;font-size:1rem;}
+.btn{padding:13px 32px;border-radius:40px;font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-primary{background:linear-gradient(135deg,var(--lavender-500),var(--lavender-700));color:#fff;box-shadow:0 6px 20px rgba(124,92,232,.38);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(124,92,232,.5);}
+.btn-outline{background:transparent;color:var(--lavender-600);border:2px solid var(--lavender-300);box-shadow:none;}
+.btn-outline:hover{background:var(--lavender-50);transform:translateY(-2px);}
+/* Fixed white, not var(--white) — every use of this class sits on a
+   photo/video hero or a fixed gradient banner (not a themed page
+   surface), so it must stay a literal white pill in both themes. Using
+   the theme token made it turn dark-and-nearly-invisible in dark mode. */
+.btn-white{background:#fff;color:var(--lavender-700);box-shadow:0 4px 16px rgba(0,0,0,0.18);}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.24);}
+
+/* ═══ GLASS SELECT (custom dropdown) ═══
+   Replaces native <select> anywhere the OPEN option list itself needs
+   to look intentional — browsers render native <select> popups
+   themselves, so no amount of CSS on the closed control fixes how
+   janky the open list looks. See GlassSelect.jsx. */
+.glass-select {
+  position: relative;
+}
+.glass-select-trigger {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1.5px solid rgba(229, 218, 250, 0.8);
+  font-family: 'Outfit', sans-serif;
+  font-size: .9rem;
+  color: var(--text-dark);
+  background: rgba(var(--glass-rgb), 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  transition: border-color .2s, background-color .2s, box-shadow .2s;
+}
+.glass-select-trigger span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.glass-select-trigger .placeholder {
+  color: var(--text-light);
+}
+.glass-select-trigger:hover {
+  border-color: var(--lavender-300);
+}
+.glass-select-trigger.open {
+  border-color: var(--lavender-400);
+  background: rgba(var(--glass-rgb), 0.85);
+  box-shadow: 0 0 0 4px rgba(124, 92, 232, 0.14);
+}
+.glass-select-arrow {
+  font-size: .75rem;
+  color: var(--lavender-500);
+  transition: transform .2s ease;
+  flex-shrink: 0;
+}
+.glass-select-trigger.open .glass-select-arrow {
+  transform: rotate(180deg);
+}
+.glass-select-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: 18px;
+  background: linear-gradient(150deg, rgba(var(--glass-rgb),0.92), rgba(var(--glass-rgb),0.78));
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(var(--glass-rgb),0.7);
+  box-shadow: 0 20px 48px rgba(100,65,212,0.22), inset 0 1px 0 rgba(var(--glass-rgb),0.8);
+  animation: glassMenuPop .15s ease-out;
+}
+@keyframes glassMenuPop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.glass-select-option {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: .88rem;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.glass-select-option:hover {
+  background: rgba(124, 92, 232, 0.12);
+  color: var(--purple-deep);
+}
+.glass-select-option.selected {
+  background: linear-gradient(135deg, rgba(232,223,254,0.95), rgba(211,196,253,0.85));
+  color: var(--purple-deep);
+  font-weight: 600;
+}
+.glass-select-menu::-webkit-scrollbar {
+  width: 6px;
+}
+.glass-select-menu::-webkit-scrollbar-thumb {
+  background: var(--lavender-300);
+  border-radius: 999px;
+}
+
+/* ═══ IMAGE HELPERS ═══ */
+.img-cover{width:100%;height:100%;object-fit:cover;display:block;}
+.img-fade{animation:fadeIn .5s ease;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* ═══════════════════════════════
+   PAGE HERO — shared banner used by
+   Services / Appointments / Shop / Reviews
+═══════════════════════════════ */
+.page-hero-wrap{position:relative;height:320px;overflow:hidden;}
+.page-hero-img{position:absolute;inset:0;}
+.page-hero-img img{width:100%;height:100%;object-fit:cover;}
+.page-hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(45,27,105,.88) 0%,rgba(45,27,105,.45) 100%);}
+.page-hero-content{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:0 5%;height:100%;display:flex;flex-direction:column;justify-content:center;}
+.page-hero-content .pill-tag{background:rgba(255,255,255,.2);color:#fff;}
+.page-hero-content h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.6rem);color:#fff;margin:0 0 12px 0;font-weight:600;line-height:1.2;}
+.page-hero-content p{color:rgba(255,255,255,.78);font-size:1.05rem;max-width:520px;margin:0;line-height:1.6;}
+@media(max-width:680px){
+  .page-hero-wrap{height:220px;}
+  .section-header{margin-bottom:36px;}
+  .btn{padding:12px 26px;font-size:.85rem;}
+}
+@media(max-width:420px){
+  .page-hero-wrap{height:190px;}
+  .page-hero-content p{font-size:.92rem;}
+}

@@ -1,0 +1,309 @@
+/* ═══════════════════════════════
+   REVIEWS.CSS — Reviews page only
+   (resets, vars, .btn, .pill-tag, .page-hero-*
+   already live in base.css)
+
+   Form rules are scoped under #page-reviews since
+   the Appointments page also has its own
+   .form-group / .form-row with different styling.
+   Colors remapped from the original mismatched
+   purple/gray to the shared lavender palette.
+═══════════════════════════════ */
+
+/* RATINGS SUMMARY BAR */
+.reviews-summary-bar {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: 0 4px 12px var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 90%;
+  margin: 40px auto;
+  max-width: 1100px;
+  border: 1px solid var(--border-light);
+  box-sizing: border-box;
+}
+.rating-big {
+  text-align: center;
+}
+.rating-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  line-height: 1;
+}
+.stars-row {
+  font-size: 1.5rem;
+  margin: 8px 0;
+}
+.rating-count {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+.rating-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bar-label {
+  width: 50px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  color: var(--text-mid);
+}
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: var(--border-light);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: var(--lavender-500);
+  border-radius: 5px;
+}
+.bar-pct {
+  width: 40px;
+  font-size: 0.9rem;
+  text-align: right;
+  color: var(--text-light);
+}
+@media (min-width: 768px) {
+  .reviews-summary-bar {
+    flex-direction: row;
+    align-items: center;
+  }
+  .rating-big {
+    padding-right: 40px;
+    border-right: 1px solid var(--border-light);
+  }
+}
+
+/* WRITE REVIEW CALLOUT */
+.write-rev-section {
+  background: linear-gradient(135deg, var(--lavender-500), var(--purple-deep));
+  color: #fff;
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  margin: 0 auto 40px;
+  max-width: 1100px;
+}
+.write-rev-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  margin-bottom: 10px;
+}
+.write-rev-section p {
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+/* REVIEWS GRID & CARDS */
+.reviews-full-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin: 0 auto 60px;
+  max-width: 1300px;
+  padding: 0 5%;
+}
+@media (min-width: 640px) {
+  .reviews-full-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .reviews-full-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.rev-card-full {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+}
+.rev-top-img {
+  height: 200px;
+  width: 100%;
+}
+.rev-top-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.rev-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.rev-card-body .rev-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.rev-card-body .rev-avatar img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.rev-card-body .rev-name {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.rev-card-body .rev-pet {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+.rev-card-body .rev-stars {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+.rev-card-body .rev-text {
+  color: var(--text-mid);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  flex-grow: 1;
+  line-height: 1.6;
+}
+.rev-card-body .rev-service {
+  display: inline-block;
+  align-self: flex-start;
+  background: var(--lavender-50);
+  color: var(--lavender-700);
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* REVIEW FORM — scoped to #page-reviews to avoid
+   colliding with the Appointments page form styles */
+#page-reviews .review-form {
+  background: var(--white);
+  color: var(--text-dark);
+  padding: 30px;
+  border-radius: var(--radius-md);
+  text-align: left;
+  margin-top: 20px;
+  box-shadow: 0 10px 24px var(--shadow-md);
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#page-reviews .form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#page-reviews .form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-mid);
+}
+#page-reviews .form-group input,
+#page-reviews .form-group select,
+#page-reviews .form-group textarea {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  background: var(--off-white);
+  outline: none;
+  transition: border-color 0.2s, background-color .2s;
+}
+#page-reviews .form-group input:focus,
+#page-reviews .form-group select:focus,
+#page-reviews .form-group textarea:focus {
+  border-color: var(--lavender-400);
+  background: var(--white);
+}
+#page-reviews .form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 640px) {
+  #page-reviews .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+#page-reviews .form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+#page-reviews .btn-submit {
+  background: var(--lavender-600);
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+#page-reviews .btn-submit:hover {
+  background: var(--lavender-700);
+  transform: translateY(-2px);
+}
+#page-reviews .btn-cancel {
+  background: var(--border-light);
+  color: var(--text-mid);
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+#page-reviews .btn-cancel:hover {
+  background: var(--border);
+}
+.review-success-banner {
+  background: rgba(124,92,232,0.12);
+  color: var(--lavender-700, #5b3fc4);
+  border: 1px solid rgba(124,92,232,0.3);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  animation: slideDown .25s ease;
+}
+.review-form-error {
+  background: rgba(229,85,85,0.1);
+  color: #c0392b;
+  border: 1px solid rgba(229,85,85,0.3);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: .9rem;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 640px) {
+  .reviews-summary-bar { padding: 22px 18px; gap: 22px; }
+  .write-rev-section { padding: 28px 20px; }
+  #page-reviews .review-form { padding: 22px 18px; }
+  #page-reviews .form-actions { justify-content: stretch; }
+  #page-reviews .btn-submit,
+  #page-reviews .btn-cancel { flex: 1; }
+}

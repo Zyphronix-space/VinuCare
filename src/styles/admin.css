@@ -1,0 +1,772 @@
+/* ============================================================
+   VinuCare Admin Dashboard
+   Palette pulled from the existing site: deep indigo (#3730A3),
+   teal (#0F766E), warm gold (#B45309) — same family used for
+   service category accents on the public site, so the admin
+   area reads as part of the same product rather than a bolted-on
+   tool.
+   ============================================================ */
+
+:root {
+  --admin-ink: #1E1B2E;
+  --admin-indigo: #3730A3;
+  --admin-indigo-dark: #262168;
+  --admin-teal: #0F766E;
+  --admin-teal-dark: #0B5C56;
+  --admin-gold: #B45309;
+  --admin-gold-dark: #8A3F07;
+  --admin-rose: #B91C1C;
+  --admin-rose-dark: #8C1616;
+  /* Two more additions to the same fixed (non-theme-flipping) brand
+     family as indigo/teal/gold/rose above, for the two Overview stat
+     cards that don't map to one of the existing four. */
+  --admin-purple: #6D28D9;
+  --admin-purple-dark: #4C1D95;
+  --admin-cyan: #0E7490;
+  --admin-cyan-dark: #164E63;
+  --admin-bg: #F6F5FB;
+  --admin-card: rgba(255, 255, 255, 0.72);
+  --admin-border: rgba(55, 48, 163, 0.12);
+  --admin-muted: #6B6580;
+  /* Separate "text on a surface" tokens for indigo/rose. The sidebar
+     keeps using --admin-indigo directly (a fixed, bold gradient look
+     in both themes, same idea as the site footer). These two are for
+     text/borders that sit on top of var(--white), which DOES flip
+     dark — so the text needs its own dark-mode value or it goes
+     dark-on-dark. */
+  --admin-indigo-text: var(--admin-indigo);
+  --admin-rose-text: var(--admin-rose);
+}
+
+/* Admin dashboard never had its own dark-mode remap — everything above
+   stayed fixed to its light-mode value even though the shared
+   var(--white)/var(--text-dark) tokens used inside this file DO flip,
+   which is what caused the half-dark/half-light admin UI. */
+html[data-theme="dark"] {
+  --admin-ink: #F1EDFA;
+  --admin-bg: #1B1729;
+  /* A dark-tinted glass overlay on an already-dark background just
+     deepens the same shade — no visible elevation, reads as a flat
+     black smudge. A light-tinted overlay actually lightens whatever's
+     behind it, which is what makes a card read as "raised" in dark UI. */
+  --admin-card: rgba(255, 255, 255, 0.055);
+  --admin-border: rgba(155, 142, 244, 0.28);
+  --admin-muted: #A79FC0;
+  --admin-indigo-text: #B9A6FF;
+  --admin-rose-text: #F1A3A3;
+}
+html[data-theme="dark"] .admin-stat-card,
+html[data-theme="dark"] .admin-panel {
+  /* The light-mode indigo-tinted shadow (rgba(55,48,163,.06-.07)) is too
+     faint to read against a dark background at all — needs real black
+     depth here instead. */
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+}
+html[data-theme="dark"] .admin-modal {
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+#page-admin {
+  min-height: 100vh;
+  background: var(--admin-bg);
+  display: flex;
+  font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+  color: var(--admin-ink);
+}
+
+/* ---------- Sidebar ---------- */
+.admin-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, var(--admin-indigo-dark), var(--admin-indigo) 70%);
+  color: #fff;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.15rem;
+  padding: 0 8px 26px;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  margin-bottom: 18px;
+}
+.admin-brand-badge {
+  background: rgba(255,255,255,0.16);
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-size: .65rem;
+  letter-spacing: .06em;
+  font-weight: 700;
+}
+
+.admin-nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--admin-rose);
+  margin-left: auto; flex-shrink: 0;
+}
+
+/* min-height: 0 lets this shrink below its content size inside the fixed-
+   height sidebar flex column — without it, a long nav list (more tabs
+   than fit in one viewport) just overflows the sidebar instead of
+   scrolling, pushing the "Back to site" footer off-screen below the fold. */
+.admin-nav {
+  display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; overflow-y: auto;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255,255,255,0.28) transparent;
+}
+/* Same thin-pill scrollbar recipe as .glass-select-menu in base.css, just
+   lightened for this sidebar's dark background instead of a light one. */
+.admin-nav::-webkit-scrollbar { width: 6px; }
+.admin-nav::-webkit-scrollbar-track { background: transparent; }
+.admin-nav::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.28);
+  border-radius: 999px;
+}
+.admin-nav::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.45); }
+.admin-nav-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 12px;
+  background: transparent; border: 1px solid transparent; color: rgba(255,255,255,0.78);
+  font-size: .92rem; font-weight: 600; text-align: left; cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.badge-nurse { background: #FCE7F3; color: #9D174D; }
+.admin-nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+}
+.admin-nav-btn.active {
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+  border-color: rgba(255,255,255,0.22);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 14px rgba(0,0,0,0.18);
+  color: #fff;
+}
+.admin-nav-icon { font-size: 1.05rem; width: 20px; text-align: center; }
+
+.admin-sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,0.14);
+  padding-top: 16px; margin-top: 12px;
+  font-size: .78rem; color: rgba(255,255,255,0.65);
+}
+.admin-exit-btn {
+  margin-top: 10px; width: 100%; padding: 9px 12px;
+  border-radius: 10px; border: 1px solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff; font-weight: 600;
+  font-size: .82rem; cursor: pointer;
+  transition: background .15s ease, transform .05s ease;
+}
+.admin-exit-btn:hover { background: rgba(255,255,255,0.16); }
+.admin-exit-btn:active { transform: scale(0.98); }
+
+/* ---------- Main content ---------- */
+.admin-main { flex: 1; padding: 30px 36px 60px; max-width: 1300px; }
+
+.admin-topbar {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 26px; flex-wrap: wrap; gap: 14px;
+}
+.admin-topbar h1 { font-size: 1.5rem; margin: 0 0 4px; }
+.admin-topbar p { margin: 0; color: var(--admin-muted); font-size: .92rem; }
+
+/* ---------- Stat cards ---------- */
+.admin-stat-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 30px;
+}
+.admin-stat-card {
+  background: var(--admin-card);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--admin-border);
+  border-radius: 16px; padding: 18px 20px;
+  box-shadow: 0 6px 24px rgba(55,48,163,0.07);
+}
+.admin-stat-label { font-size: .78rem; color: var(--admin-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.admin-stat-value { font-size: 1.7rem; font-weight: 800; margin-top: 6px; }
+.admin-stat-sub { font-size: .78rem; margin-top: 4px; font-weight: 600; }
+.admin-stat-sub.up { color: var(--admin-teal); }
+.admin-stat-sub.down { color: var(--admin-rose); }
+
+/* Overview-only: solid gradient variant for the top stat row, instead of
+   the glass look every other stat card on the dashboard uses — the
+   Overview tab is the "at a glance" landing page, so it gets to be the
+   colorful one. */
+.admin-stat-card.gradient {
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 10px 24px -8px var(--stat-glow, rgba(0,0,0,.3));
+}
+.admin-stat-card.gradient .admin-stat-label { color: rgba(255,255,255,.82); }
+.admin-stat-card.gradient .admin-stat-value { color: #fff; }
+.admin-stat-card.gradient .admin-stat-sub,
+.admin-stat-card.gradient .admin-stat-sub.up,
+.admin-stat-card.gradient .admin-stat-sub.down { color: rgba(255,255,255,.85); }
+
+/* Same 160deg dark-to-base direction/stop as .admin-sidebar's gradient,
+   so these read as the same brand family instead of a new color language
+   bolted onto the Overview tab specifically. */
+.admin-stat-card.gradient.c-indigo { background: linear-gradient(160deg, var(--admin-indigo-dark), var(--admin-indigo) 70%); --stat-glow: rgba(55,48,163,.35); }
+.admin-stat-card.gradient.c-rose   { background: linear-gradient(160deg, var(--admin-rose-dark), var(--admin-rose) 70%); --stat-glow: rgba(185,28,28,.35); }
+.admin-stat-card.gradient.c-teal   { background: linear-gradient(160deg, var(--admin-teal-dark), var(--admin-teal) 70%); --stat-glow: rgba(15,118,110,.35); }
+.admin-stat-card.gradient.c-gold   { background: linear-gradient(160deg, var(--admin-gold-dark), var(--admin-gold) 70%); --stat-glow: rgba(180,83,9,.35); }
+.admin-stat-card.gradient.c-purple { background: linear-gradient(160deg, var(--admin-purple-dark), var(--admin-purple) 70%); --stat-glow: rgba(109,40,217,.35); }
+.admin-stat-card.gradient.c-cyan   { background: linear-gradient(160deg, var(--admin-cyan-dark), var(--admin-cyan) 70%); --stat-glow: rgba(14,116,144,.35); }
+
+/* Steady white pulse for the "Users Online" gradient card — the teal
+   .admin-live-dot/-indicator pair reads fine on a light glass card but
+   disappears against a saturated gradient background. */
+.admin-stat-live-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.35);
+  margin-left: 2px;
+}
+
+/* ---------- Panel / card shell ---------- */
+.admin-panel {
+  background: var(--admin-card);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid var(--admin-border);
+  border-radius: 18px; padding: 22px 24px;
+  box-shadow: 0 6px 24px rgba(55,48,163,0.06);
+  margin-bottom: 24px;
+}
+.admin-panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+}
+.admin-panel-head h2 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; }
+
+/* Small color-coded dot before a chart's title on the Analytics tab,
+   matching that chart's series color — lets you tell revenue/teal/gold/
+   rose charts apart at a glance instead of every panel header looking
+   identical regardless of what it's charting. */
+.admin-chart-dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  margin-right: 9px; flex-shrink: 0;
+}
+
+/* ---------- Controls ---------- */
+/* Same liquid-glass treatment as .admin-tabs/.admin-panel — these sit
+   right next to the glass tab bar in the panel head, and looked out of
+   place as flat solid boxes beside it. Shared across Admin/Nurse/Doctor
+   since AdminUsers/AdminAppointments/AdminProducts are the same
+   components in all three dashboards. */
+/* Was tinted with rgba(var(--glass-rgb),X) — pure white-on-white in light
+   mode, so the blur had nothing to visibly frost against a plain light
+   page and just read as flat. .admin-tabs below has always looked right
+   because it's tinted with actual color (indigo) instead of white; these
+   now use the same recipe. */
+.admin-search {
+  padding: 9px 14px; border-radius: 10px;
+  border: 1px solid rgba(124,92,232,0.22);
+  background: linear-gradient(135deg, rgba(124,92,232,0.10), rgba(124,92,232,0.03));
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 4px 16px rgba(124,92,232,0.08), inset 0 1px 0 rgba(255,255,255,0.5);
+  font-size: .85rem; min-width: 220px;
+  color: var(--admin-ink); transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.admin-search:hover { border-color: rgba(124,92,232,0.4); }
+.admin-search:focus {
+  outline: none;
+  border-color: var(--admin-indigo-text);
+  background: linear-gradient(135deg, rgba(124,92,232,0.16), rgba(124,92,232,0.05));
+  box-shadow: 0 4px 16px rgba(124,92,232,0.12), inset 0 1px 0 rgba(255,255,255,0.6), 0 0 0 3px rgba(155, 142, 244, 0.25);
+}
+.admin-select {
+  padding: 9px 12px; border-radius: 10px;
+  border: 1px solid rgba(124,92,232,0.22);
+  background: linear-gradient(135deg, rgba(124,92,232,0.10), rgba(124,92,232,0.03));
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 4px 16px rgba(124,92,232,0.08), inset 0 1px 0 rgba(255,255,255,0.5);
+  font-size: .85rem; color: var(--admin-ink);
+  cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.admin-select:hover { border-color: rgba(124,92,232,0.4); }
+.admin-select:focus {
+  outline: none;
+  border-color: var(--admin-indigo-text);
+  background: linear-gradient(135deg, rgba(124,92,232,0.16), rgba(124,92,232,0.05));
+  box-shadow: 0 4px 16px rgba(124,92,232,0.12), inset 0 1px 0 rgba(255,255,255,0.6), 0 0 0 3px rgba(155, 142, 244, 0.25);
+}
+.admin-select option, .admin-field select option {
+  background: var(--white);
+  color: var(--admin-ink);
+}
+.admin-btn {
+  padding: 10px 18px; border-radius: 10px; border: none;
+  font-weight: 700; font-size: .85rem; cursor: pointer;
+  transition: filter .15s ease, transform .05s ease;
+}
+.admin-btn:active { transform: scale(0.98); }
+.admin-btn-primary {
+  background: var(--admin-indigo); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 6px 16px rgba(55,48,163,0.28);
+}
+.admin-btn-primary:hover { filter: brightness(1.08); }
+.admin-btn-outline {
+  background: rgba(var(--glass-rgb), 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--admin-indigo-text);
+  border: 1px solid var(--admin-indigo-text);
+}
+.admin-btn-outline:hover { background: rgba(var(--glass-rgb), 0.85); }
+.admin-btn-danger {
+  background: rgba(var(--glass-rgb), 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--admin-rose-text);
+  border: 1px solid var(--admin-rose-text);
+}
+.admin-btn-danger:hover { background: var(--admin-rose); color: #fff; }
+.admin-btn-sm { padding: 6px 12px; font-size: .78rem; border-radius: 8px; }
+
+/* Native file-input's own OS-drawn button, restyled to match the glass
+   button language above — the surrounding box is already themed via
+   .admin-field input, but the inner button ignores that entirely
+   without ::file-selector-button. */
+.admin-field input[type="file"] { cursor: pointer; }
+.admin-field input[type="file"]::file-selector-button,
+.admin-field input[type="file"]::-webkit-file-upload-button {
+  padding: 8px 16px;
+  margin-right: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--admin-indigo-text);
+  background: rgba(var(--glass-rgb), 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--admin-indigo-text);
+  font-weight: 700;
+  font-size: .8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .05s ease;
+}
+.admin-field input[type="file"]::file-selector-button:hover,
+.admin-field input[type="file"]::-webkit-file-upload-button:hover {
+  background: rgba(var(--glass-rgb), 0.85);
+}
+.admin-field input[type="file"]::file-selector-button:active,
+.admin-field input[type="file"]::-webkit-file-upload-button:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Table ---------- */
+.admin-table-wrap {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--admin-indigo-text) transparent;
+}
+.admin-table-wrap::-webkit-scrollbar { height: 6px; }
+.admin-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.admin-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--admin-indigo-text);
+  border-radius: 999px;
+  opacity: 0.5;
+}
+.admin-table { width: 100%; border-collapse: collapse; font-size: .87rem; }
+.admin-table th {
+  text-align: left; padding: 10px 12px; color: var(--admin-muted);
+  font-weight: 700; font-size: .74rem; text-transform: uppercase;
+  letter-spacing: .04em; border-bottom: 1px solid var(--admin-border);
+  white-space: nowrap;
+}
+.admin-table td {
+  padding: 12px; border-bottom: 1px solid rgba(55,48,163,0.06);
+  vertical-align: middle;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* GlassSelect's trigger is width:100% of its own wrapper (.glass-select),
+   which has no intrinsic width of its own — without a min-width here the
+   wrapper collapses to min-content while the absolutely-positioned menu
+   still spans it, so the two visually mismatch. Same fix already applied
+   for .shop-sort-wrap .glass-select in shop.css. */
+.admin-panel-head .glass-select { min-width: 160px; }
+.admin-table-actions .glass-select { min-width: 130px; }
+
+.admin-thumb {
+  width: 40px; height: 40px; border-radius: 8px; object-fit: cover;
+  background: var(--lavender-50); flex-shrink: 0;
+}
+.admin-cell-main { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.admin-cell-sub { color: var(--admin-muted); font-size: .78rem; }
+
+/* ---------- Badges ---------- */
+.admin-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: .72rem; font-weight: 700;
+}
+.badge-active, .badge-confirmed, .badge-paid { background: #DCFCE7; color: #166534; }
+.badge-pending { background: #FEF3C7; color: #92400E; }
+.badge-suspended, .badge-cancelled, .badge-failed { background: #FEE2E2; color: #991B1B; }
+.badge-onleave, .badge-refunded { background: #E0E7FF; color: #3730A3; }
+.badge-admin { background: #EDE9FE; color: #5B21B6; }
+.badge-doctor { background: #CCFBF1; color: #0F766E; }
+.badge-staff { background: #FEF3C7; color: #92400E; }
+.badge-customer { background: #E5E7EB; color: #374151; }
+
+/* ---------- Liquid-glass tab filter (replaces the old <select> filter
+   dropdowns on Users, Appointments, and Products — shared across all
+   three staff dashboards since AdminAppointments/AdminProducts are
+   reused by Nurse/Doctor) ---------- */
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(124,92,232,0.14), rgba(124,92,232,0.05));
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(124,92,232,0.18);
+  box-shadow: 0 4px 18px rgba(124,92,232,0.10), inset 0 1px 0 rgba(255,255,255,0.5);
+  overflow-x: auto;
+  scrollbar-width: none;
+  max-width: 100%;
+}
+.admin-tabs::-webkit-scrollbar { display: none; }
+.admin-tab-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--admin-muted);
+  font-family: 'Outfit', sans-serif;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .2s ease;
+}
+.admin-tab-btn:hover:not(.active) {
+  background: rgba(124,92,232,0.10);
+  color: var(--lavender-600);
+}
+.admin-tab-btn.active {
+  background: linear-gradient(135deg, var(--lavender-500), var(--lavender-700));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(124,92,232,.35);
+}
+
+.admin-empty { text-align: center; padding: 36px; color: var(--admin-muted); }
+
+/* ---------- Modal (liquid glass — same frosted-panel recipe as
+   .glass-select-menu in base.css: translucent gradient over
+   var(--glass-rgb), heavy blur+saturate, soft inset highlight) ---------- */
+.admin-modal-overlay {
+  position: fixed; inset: 0; background: rgba(30,27,46,0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; padding: 20px;
+}
+.admin-modal {
+  background: linear-gradient(150deg, rgba(var(--glass-rgb),0.92), rgba(var(--glass-rgb),0.74));
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(var(--glass-rgb),0.7);
+  border-radius: 22px; padding: 26px 28px;
+  width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(30,27,46,0.3), inset 0 1px 0 rgba(var(--glass-rgb),0.85);
+  animation: glassMenuPop .18s ease-out;
+  /* Same thin themed scrollbar as .admin-nav, instead of the browser's
+     default one — admin-indigo-text is already light/dark-theme-aware. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--admin-indigo-text) transparent;
+}
+.admin-modal::-webkit-scrollbar { width: 6px; }
+.admin-modal::-webkit-scrollbar-track { background: transparent; }
+.admin-modal::-webkit-scrollbar-thumb {
+  background: var(--admin-indigo-text);
+  border-radius: 999px;
+  opacity: 0.5;
+}
+.admin-modal h3 { margin: 0 0 18px; font-size: 1.1rem; }
+.admin-field { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+.admin-field label { font-size: .78rem; font-weight: 700; color: var(--admin-muted); }
+/* Same liquid-glass recipe as every other input on the site (see
+   #page-appointments .form-group input in appointments.css, and
+   .glass-select-trigger in base.css) — rgba(var(--glass-rgb), X), not a
+   fixed low-opacity purple wash, which is what made these read as flat
+   instead of glassy: that wash was ~2-9% opacity, barely visible against
+   the modal's own translucent background. */
+.admin-field input, .admin-field select, .admin-field textarea {
+  padding: 10px 12px; border-radius: 11px;
+  border: 1.5px solid rgba(var(--glass-rgb),0.7);
+  font-size: .88rem; font-family: inherit;
+  background: rgba(var(--glass-rgb), 0.55);
+  color: var(--admin-ink);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: inset 0 1px 0 rgba(var(--glass-rgb),0.5);
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.admin-field input:hover, .admin-field select:hover, .admin-field textarea:hover {
+  border-color: var(--lavender-300);
+}
+.admin-field input:focus, .admin-field select:focus, .admin-field textarea:focus {
+  outline: none;
+  border-color: var(--admin-indigo-text);
+  background: rgba(var(--glass-rgb), 0.85);
+  box-shadow: inset 0 1px 0 rgba(var(--glass-rgb),0.6), 0 0 0 3px rgba(155, 142, 244, 0.25);
+}
+.admin-field textarea { resize: vertical; min-height: 64px; }
+
+/* rgba(var(--glass-rgb), X) is a DARK tint in dark mode (same variable
+   the whole dark theme uses to lighten cards — see --admin-card above),
+   so a field using it sits dark-on-dark against an already-dark modal/
+   panel and nearly disappears. Give inputs the same light-overlay
+   treatment .admin-card gets instead, so they read as clearly raised. */
+html[data-theme="dark"] .admin-field input,
+html[data-theme="dark"] .admin-field select,
+html[data-theme="dark"] .admin-field textarea {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+html[data-theme="dark"] .admin-field input:hover,
+html[data-theme="dark"] .admin-field select:hover,
+html[data-theme="dark"] .admin-field textarea:hover {
+  border-color: rgba(155, 142, 244, 0.5);
+}
+html[data-theme="dark"] .admin-field input:focus,
+html[data-theme="dark"] .admin-field select:focus,
+html[data-theme="dark"] .admin-field textarea:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--admin-indigo-text);
+  box-shadow: 0 0 0 3px rgba(155, 142, 244, 0.25);
+}
+/* Chrome forces its own light-yellow/blue autofill background regardless
+   of page theme unless overridden with this inset-shadow trick — same
+   fix already used in appointments.css/auth.css, applied here too so an
+   autofilled field doesn't blow out as a stark white box in dark mode. */
+html[data-theme="dark"] .admin-field input:-webkit-autofill,
+html[data-theme="dark"] .admin-field input:-webkit-autofill:hover,
+html[data-theme="dark"] .admin-field input:-webkit-autofill:focus,
+html[data-theme="dark"] .admin-field input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgba(45, 38, 66, 1) inset !important;
+  -webkit-text-fill-color: var(--admin-ink) !important;
+  caret-color: var(--admin-ink);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.admin-field-row { display: flex; gap: 12px; }
+/* min-width: 0 — same flex default-min-width gotcha as .admin-nav above.
+   Without it, a column can't shrink below the widest thing inside it
+   (e.g. the restock row's button), so it pushes the whole modal wider
+   and the page gets a horizontal scrollbar instead of the row wrapping. */
+.admin-field-row .admin-field { flex: 1; min-width: 0; }
+.admin-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.admin-image-preview {
+  width: 100%; height: 130px; border-radius: 10px; object-fit: cover;
+  background: var(--lavender-50); margin-top: 8px;
+}
+
+/* ---------- Analytics ---------- */
+.admin-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+.admin-analytics-total {
+  font-size: .85rem; font-weight: 700; color: var(--admin-indigo-text);
+}
+
+/* Small pulsing dot next to "Analytics" heading, briefly shown when a
+   live socket event triggers a data refresh — a quiet visual cue that
+   the numbers just moved, without an intrusive toast/alert. */
+.admin-live-dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--admin-teal); margin-left: 8px;
+  animation: admin-pulse 1.2s ease-out;
+}
+/* Steady (non-animated) dot next to "Live activity" — signals the feed
+   is connected and listening, even before anything has happened yet. */
+.admin-live-indicator {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--admin-teal); margin-left: 6px;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+}
+@keyframes admin-pulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  70%  { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.admin-live-feed {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 2px;
+  max-height: 280px; overflow-y: auto;
+}
+.admin-live-feed li {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 4px; font-size: .86rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+.admin-live-feed li:last-child { border-bottom: none; }
+.admin-live-feed time { color: var(--admin-muted); font-size: .74rem; flex-shrink: 0; }
+
+/* ---------- DM / messaging (same bubble recipe as the customer
+   chatbot — see .vc-chatbot-bubble-* in chatbot.css — so the two
+   chat-shaped features in the app read as one system) ---------- */
+.dm-thread {
+  display: flex;
+  flex-direction: column;
+  height: 65vh;
+  min-height: 420px;
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  background: var(--admin-card);
+  overflow: hidden;
+}
+.dm-thread-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dm-empty { text-align: center; color: var(--admin-muted); margin: auto; }
+.dm-bubble-row { display: flex; }
+.dm-bubble-row.mine { justify-content: flex-end; }
+.dm-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: .87rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.dm-bubble-theirs {
+  background: rgba(var(--glass-rgb), 0.65);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-ink);
+  border-bottom-left-radius: 4px;
+}
+.dm-bubble-mine {
+  background: linear-gradient(135deg, var(--lavender-500), var(--lavender-700));
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.dm-bubble-sender { font-size: .74rem; font-weight: 700; opacity: .75; margin-bottom: 3px; }
+.dm-bubble-time { font-size: .7rem; opacity: .6; margin-top: 4px; }
+.dm-bubble { position: relative; }
+.dm-bubble-actions {
+  display: flex; gap: 4px;
+  position: absolute; top: -12px; right: 8px;
+  opacity: 0; transition: opacity .12s ease;
+}
+.dm-bubble:hover .dm-bubble-actions { opacity: 1; }
+.dm-bubble-action {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--admin-card); border: 1px solid var(--admin-border);
+  color: var(--admin-muted); cursor: pointer; padding: 0;
+}
+.dm-bubble-action:hover { color: var(--admin-ink); border-color: var(--lavender-400); }
+.dm-edit-form { display: flex; flex-direction: column; gap: 6px; }
+.dm-edit-input {
+  border: 1px solid rgba(255,255,255,0.4); border-radius: 8px;
+  padding: 6px 9px; font-size: .87rem; font-family: inherit;
+  background: rgba(255,255,255,0.15); color: inherit;
+}
+.dm-bubble-theirs .dm-edit-input { border-color: var(--admin-border); background: rgba(var(--glass-rgb), 0.6); color: var(--admin-ink); }
+.dm-edit-input:focus { outline: none; }
+.dm-edit-actions { display: flex; gap: 6px; }
+.dm-edit-actions button {
+  border: none; border-radius: 6px; padding: 4px 10px;
+  font-size: .74rem; font-weight: 700; cursor: pointer;
+}
+.dm-edit-actions button:first-child { background: #fff; color: var(--lavender-700); }
+.dm-edit-actions button:last-child { background: rgba(0,0,0,0.15); color: inherit; }
+.dm-edit-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.dm-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--admin-border);
+  background: rgba(var(--glass-rgb), 0.5);
+  flex-shrink: 0;
+}
+.dm-input {
+  flex: 1;
+  border: 1px solid var(--admin-border);
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-size: .86rem;
+  font-family: inherit;
+  background: rgba(var(--glass-rgb), 0.6);
+  color: var(--admin-ink);
+}
+.dm-input:focus { outline: none; border-color: var(--lavender-400); box-shadow: 0 0 0 3px rgba(155, 142, 244, 0.25); }
+.dm-send {
+  padding: 10px 20px; border-radius: 999px; border: none;
+  background: linear-gradient(135deg, var(--admin-indigo), var(--admin-indigo-dark));
+  color: #fff; font-weight: 700; font-size: .85rem; cursor: pointer;
+}
+.dm-send:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---------- Admin inbox layout (thread list + open conversation) ---------- */
+.dm-inbox { display: grid; grid-template-columns: 280px 1fr; gap: 18px; align-items: start; }
+.dm-thread-list-panel { border: 1px solid var(--admin-border); border-radius: 16px; overflow: hidden; max-height: 65vh; overflow-y: auto; }
+.dm-thread-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 14px 16px; border-bottom: 1px solid var(--admin-border);
+  cursor: pointer; background: var(--admin-card);
+}
+.dm-thread-item:hover { background: rgba(124,92,232,0.08); }
+.dm-thread-item.active { background: rgba(124,92,232,0.14); }
+.dm-thread-item-name { font-weight: 700; font-size: .88rem; }
+.dm-thread-item-role { font-size: .74rem; color: var(--admin-muted); }
+.dm-thread-item-preview { font-size: .78rem; color: var(--admin-muted); margin-top: 2px; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dm-unread-badge {
+  background: var(--admin-rose); color: #fff; border-radius: 999px;
+  font-size: .7rem; font-weight: 700; padding: 2px 8px; flex-shrink: 0;
+}
+@media (max-width: 900px) {
+  .dm-inbox { grid-template-columns: 1fr; }
+  .dm-thread-list-panel { max-height: 220px; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  #page-admin { flex-direction: column; }
+  .admin-sidebar { width: 100%; height: auto; position: static; flex-direction: row; overflow-x: auto; padding: 14px; }
+  .admin-brand { display: none; }
+  .admin-nav { flex-direction: row; flex: none; }
+  .admin-nav-btn { white-space: nowrap; }
+  .admin-sidebar-footer { display: none; }
+  .admin-main { padding: 20px; }
+}
+@media (max-width: 560px) {
+  .admin-main { padding: 16px 14px; }
+  .admin-topbar { flex-direction: column; align-items: flex-start; }
+  .admin-panel { padding: 18px 16px; }
+  .admin-field-row { flex-direction: column; gap: 0; }
+  .admin-modal { padding: 22px 18px; }
+  .admin-panel-head .admin-search,
+  .admin-panel-head .admin-select { flex: 1 1 140px; min-width: 0; }
+  .admin-panel-head .admin-tabs { width: 100%; }
+}

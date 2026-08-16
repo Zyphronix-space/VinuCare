@@ -1,0 +1,535 @@
+/* ═══════════════════════════════
+   SERVICES.CSS — Services page only
+   (resets, vars, .btn, .pill-tag, .page-hero-*
+   already live in base.css)
+═══════════════════════════════ */
+
+/* ── Emergency notice bar — first thing on the page, no scrolling needed ── */
+.svc-emergency-bar {
+  background: linear-gradient(90deg, #B91C1C, #DC2626);
+  width: 100%;
+}
+.svc-emergency-bar-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 12px 5%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.svc-emergency-bar-icon {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+.svc-emergency-bar-text {
+  color: #fff;
+  font-size: .88rem;
+  line-height: 1.4;
+  margin: 0;
+  flex: 1 1 260px;
+}
+.svc-emergency-bar-text strong {
+  font-weight: 700;
+}
+.svc-emergency-bar-btn {
+  flex-shrink: 0;
+  background: #fff;
+  color: #B91C1C;
+  font-weight: 700;
+  font-size: .82rem;
+  padding: 8px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.svc-emergency-bar-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+}
+@media (max-width: 640px) {
+  .svc-emergency-bar-inner { padding: 10px 5%; }
+  .svc-emergency-bar-text { flex-basis: 100%; }
+}
+
+.cat-tags-row {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.cat-tag {
+  font-size: .72rem;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: var(--lavender-50);
+  color: var(--lavender-700);
+}
+
+/* ═══════════════════════════════
+   SERVICES GRID PAGE — photographic cards
+═══════════════════════════════ */
+
+.svc-page-wrap {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 56px 5% 90px;
+}
+
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 22px;
+}
+
+/* --- card: single wide-banner style used for every service --- */
+.svc-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  min-height: 420px;
+}
+.svc-card-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.svc-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .5s ease;
+}
+.svc-card:hover .svc-card-img img {
+  transform: scale(1.06);
+}
+.svc-card-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(10, 8, 20, 0) 30%, rgba(10, 8, 20, 0.55) 68%, rgba(10, 8, 20, 0.88) 100%);
+  transition: background .3s ease;
+}
+.svc-card:hover .svc-card-scrim {
+  background: linear-gradient(180deg, rgba(10, 8, 20, 0.05) 20%, rgba(10, 8, 20, 0.65) 65%, rgba(10, 8, 20, 0.92) 100%);
+}
+.svc-card-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+.svc-card-body {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  padding: 32px 34px 34px;
+  width: 100%;
+  max-width: 560px;
+}
+.svc-card-category {
+  display: block;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  opacity: .8;
+  margin-bottom: 6px;
+}
+.svc-card-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+}
+
+.svc-card-desc {
+  opacity: .88;
+  font-size: .92rem;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+.svc-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.svc-card-tag {
+  font-size: .68rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(2px);
+}
+.svc-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.svc-card-btn {
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  padding: 10px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: filter .2s, transform .2s;
+}
+.svc-card-btn:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+.svc-card-link {
+  font-size: .82rem;
+  font-weight: 600;
+  color: #fff;
+  opacity: .85;
+}
+.svc-card:hover .svc-card-link {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .svc-card { min-height: 380px; }
+}
+@media (max-width: 620px) {
+  .svc-grid { grid-template-columns: 1fr; }
+  .svc-card { min-height: 360px; }
+  .svc-card-body { padding: 26px 24px 28px; max-width: 100%; }
+}
+
+@media (max-width: 1024px) {
+  .cat-grid-full {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .cat-grid-full {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════
+   SERVICE DETAIL PAGE
+═══════════════════════════════ */
+
+.service-detail {
+  padding-bottom: 90px;
+}
+
+/* --- Hero --- */
+.service-detail-hero {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.service-detail-hero-img {
+  position: absolute;
+  inset: 0;
+}
+.service-detail-hero-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.service-detail-hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+.service-detail-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 48px 5% 44px;
+  color: #fff;
+  max-width: 760px;
+}
+.service-detail-hero-content h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  margin: 14px 0 10px;
+  line-height: 1.1;
+}
+.service-detail-tagline {
+  font-size: 1.05rem;
+  opacity: 0.92;
+  margin: 0 0 18px;
+  max-width: 560px;
+}
+.breadcrumb-link {
+  background: none;
+  border: none;
+  color: #fff;
+  opacity: 0.85;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 18px;
+  display: inline-block;
+}
+.breadcrumb-link:hover { opacity: 1; text-decoration: underline; }
+.cat-tag-light {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+.service-detail-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Hero CTA — bigger and icon-led so it reads as a clear action,
+   not just another line of hero text --- */
+.team-detail-hero-cta,
+.service-detail-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 20px 0 0;
+  align-self: flex-start;
+  font-size: .96rem;
+  padding: 14px 30px;
+}
+
+/* --- Floating persistent Book Now — stays reachable once the hero
+   scrolls out of view, so people never have to scroll down looking
+   for a button. Pinned near the top (under the nav bar) since that's
+   the natural place people look for it, not the bottom. --- */
+.floating-book-btn {
+  position: fixed;
+  right: 24px;
+  top: calc(var(--nav-h) + 16px);
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #fff;
+  border: none;
+  padding: 15px 26px;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(-16px) scale(.96);
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+}
+.floating-book-btn.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.floating-book-btn:hover {
+  transform: translateY(3px) scale(1);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.36);
+}
+@media (max-width: 640px) {
+  .floating-book-btn {
+    left: 16px;
+    right: 16px;
+    justify-content: center;
+  }
+}
+
+/* --- Discover / overview section --- */
+.discover-section {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 5% 20px;
+  text-align: center;
+}
+.discover-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  margin: 12px 0 16px;
+  color: var(--text-dark);
+}
+.discover-section p {
+  color: var(--text-light);
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+/* --- Highlights / what's included --- */
+.highlights-section {
+  padding: 44px 5% 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.highlights-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  text-align: center;
+  margin: 0 0 32px;
+  color: var(--text-dark);
+}
+.highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.highlight-card {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(100, 65, 212, 0.06);
+  transition: transform .3s, box-shadow .3s;
+}
+.highlight-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px var(--shadow-md);
+}
+.highlight-card-media {
+  height: 210px;
+  width: 100%;
+}
+.highlight-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.highlight-card-media-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.highlight-card-fallback-icon {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+.highlight-card-media-fallback svg {
+  width: 40px;
+  height: 40px;
+}
+.highlight-card-body {
+  padding: 24px 26px 28px;
+}
+.highlight-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  margin: 0 0 16px;
+  color: var(--text-dark);
+}
+.highlight-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.highlight-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: .9rem;
+  color: var(--text-light);
+  line-height: 1.4;
+}
+.check-icon {
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+/* --- Good to know callout --- */
+.info-callout {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 22px 5%;
+  border-left: 4px solid;
+  background: var(--lavender-50);
+}
+.info-callout h4 {
+  margin: 0 0 6px;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.info-callout p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: .92rem;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+/* --- CTA banner --- */
+.detail-cta-banner {
+  margin: 56px 5% 0;
+  border-radius: var(--radius-xl);
+  padding: 52px 40px;
+  text-align: center;
+  color: #fff;
+}
+.detail-cta-banner h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  margin: 0 0 10px;
+  text-transform: capitalize;
+}
+.detail-cta-banner p {
+  opacity: 0.9;
+  margin: 0 0 24px;
+}
+
+@media (max-width: 900px) {
+  .highlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .highlight-grid {
+    grid-template-columns: 1fr;
+  }
+  .detail-cta-banner {
+    padding: 38px 24px;
+    margin: 40px 5% 0;
+  }
+  .service-detail-hero {
+    min-height: 340px;
+  }
+  .service-detail-hero-content {
+    padding: 32px 6% 32px;
+  }
+  .highlights-section,.discover-section {
+    padding-left: 6%;
+    padding-right: 6%;
+  }
+}
