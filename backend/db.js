@@ -14,6 +14,15 @@ const pool = mysql.createPool({
   ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost'
     ? { rejectUnauthorized: false }
     : undefined,
+  // Without this, idle pooled connections to a remote managed MySQL host
+  // (which drops idle TLS connections more aggressively than a typical
+  // host) silently die and get re-established from scratch on the next
+  // request — paying a full TLS handshake on requests that should've
+  // reused a warm connection, which is most of what "the site feels slow"
+  // reports on Azure/Railway turned out to be.
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
+  connectionLimit: 10,
 });
 
 module.exports = pool.promise();
