@@ -1,3 +1,14 @@
+<p align="center"><img src="docs/banner.svg" alt="VinuCare — Full-stack pet-care platform" width="100%" /></p>
+
+<p align="center">
+<img src="https://img.shields.io/badge/-React-0d0d16?style=flat-square&logo=react&logoColor=white" alt="React" />
+<img src="https://img.shields.io/badge/-Node.js-0d0d16?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js" />
+<img src="https://img.shields.io/badge/-Express-0d0d16?style=flat-square&logo=express&logoColor=white" alt="Express" />
+<img src="https://img.shields.io/badge/-MySQL-0d0d16?style=flat-square&logo=mysql&logoColor=white" alt="MySQL" />
+<img src="https://img.shields.io/badge/-Socket.io-0d0d16?style=flat-square&logo=socketdotio&logoColor=white" alt="Socket.io" />
+<img src="https://img.shields.io/badge/-Claude%20API-6C5CE7?style=flat-square&logo=anthropic&logoColor=white" alt="Claude API" />
+</p>
+
 # VinuCare
 
 **Live demo:** https://witty-stone-0dc7a5c00.7.azurestaticapps.net/
@@ -57,6 +68,19 @@ audit log of every admin action.
   only; run the backend locally (see below) to exercise the full app.
 
 ## Architecture
+
+```mermaid
+flowchart LR
+    C["React SPA<br/>(customer / doctor / nurse / admin views)"] -->|REST, JWT cookie| API["Express API<br/>routes/*, requireRole middleware"]
+    API --> DB[("MySQL<br/>mysql2, additive migrations")]
+    API -->|checkout hash, webhook verify| PH["PayHere<br/>payment gateway"]
+    API -->|tool-calling, grounded| CL["Claude API<br/>FAQ fallback + live data tools"]
+    API <-->|staff messaging| WS["Socket.io"]
+    API -->|reminder emails| MAIL["Resend"]
+
+    classDef stage fill:#6C5CE7,stroke:#4834B0,color:#fff
+    class API stage
+```
 
 ```
 src/           React (Vite) SPA — hand-rolled page-switching (no router
