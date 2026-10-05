@@ -11,7 +11,7 @@
 
 # VinuCare
 
-**Live demo:** https://witty-stone-0dc7a5c00.7.azurestaticapps.net/
+**Live demo:** https://vinucare-complete.vercel.app/ *(free-tier backend — the first load after a quiet spell can take ~30–60s to wake up)*
 
 A full-stack pet clinic and pet-shop platform — appointment booking, an online
 product shop, a real Sri Lankan payment gateway, role-based staff dashboards,
