@@ -11,7 +11,7 @@
 
 # VinuCare
 
-**Live demo:** https://vinucare-complete.vercel.app/ *(free-tier backend — the first load after a quiet spell can take ~30–60s to wake up)*
+**Live demo:** https://vinucare-complete.vercel.app/ — full stack: frontend and API on Vercel, MySQL-compatible database on TiDB Cloud *(serverless — the first request after a quiet spell can take a few seconds)*
 
 A full-stack pet clinic and pet-shop platform — appointment booking, an online
 product shop, a real Sri Lankan payment gateway, role-based staff dashboards,
@@ -64,8 +64,9 @@ audit log of every admin action.
 ### What's not there
 
 - No automated tests yet.
-- No live-hosted backend at the moment — the demo link above is the frontend
-  only; run the backend locally (see below) to exercise the full app.
+- Payments run against the PayHere sandbox, and real-time staff chat
+  (Socket.io) is disabled on the serverless deployment — run the backend
+  locally for live sockets.
 
 ## Architecture
 
@@ -159,7 +160,6 @@ analytics, and the chatbot in action._
 ## Future improvements
 
 - Automated backend tests (none exist yet)
-- A live-hosted backend for the demo (currently frontend-only)
 - Live Koko "Pay Later" integration (the route exists and returns a clear
   "not available yet" response — no business BNPL onboarding for a student
   project)
